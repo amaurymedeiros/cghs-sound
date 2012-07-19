@@ -29,6 +29,7 @@ class ToneMatrix(object):
 class Segmenter(object):
     THRESHOLD = 220
     THRESHOLD_AVG = 230
+	LIMIT_N_PIXELS = 300
 
     def __init__(self, blocks_x, blocks_y):
         self.blocks_x = blocks_x
@@ -63,7 +64,17 @@ class Segmenter(object):
             for j in range(height): 
                 tot += img.getPixel(base_x+i,base_y+j)[0]
         return tot/(width*height) <= self.THRESHOLD_AVG
-        
+    
+    def check_presence_inc(self, img, base_x, base_y, width, height):
+		n_pixels = 0
+        for i in range(width):
+            for j in range(height): 
+                if img.getPixel(base_x + i,base_y + j)[0] < self.THRESHOLD:
+                    n_pixels += 1
+		if n_pixels > self.LIMIT_N_PIXELS:
+			return True
+        return False    
+
 
 class Drawer(object):
     
